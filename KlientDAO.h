@@ -9,7 +9,7 @@
 using namespace std;
 
 
-class  AdminDAO
+class  KlientDAO
 {
 	unsigned int hashValue(string); //done
 	string walidacjaKodPocztowy(string); //done

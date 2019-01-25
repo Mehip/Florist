@@ -13,14 +13,7 @@ using namespace std;
 #define KEY_DOWN 80
 #define ENTER 13
 
-MYSQL mysql;
-MYSQL_RES *idZapytania;
-MYSQL_ROW  wiersz;
-stringstream zapytanie;
-HANDLE kolor; //uchwyt do koloru
-
-
-			  //done
+//done
 unsigned int KlientDAO::hashValue(string key) //funkcja hashujaca
 {
 	unsigned int val = 0;
@@ -51,7 +44,7 @@ string KlientDAO::walidacjaKodPocztowy(string kod)
 }
 
 //done
-string AdminDAO::walidacjaNrTel(string numer)
+string KlientDAO::walidacjaNrTel(string numer)
 {
 	int ilosc;
 
@@ -79,7 +72,7 @@ string AdminDAO::walidacjaNrTel(string numer)
 }
 
 //done
-string AdminDAO::walidacjaMail(string mail)
+string KlientDAO::walidacjaMail(string mail)
 {
 	int kropka = 0;
 	int malpa = 0;
@@ -126,8 +119,13 @@ string AdminDAO::walidacjaMail(string mail)
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 //done
-void AdminDAO::edytuj_konto()
+void KlientDAO::edytuj_konto()
 {
+	MYSQL mysql;
+	stringstream zapytanie;
+
+	HANDLE kolor; //uchwyt do koloru
+
 	string haslo;
 	int hasloHASH;
 	//ustawienie koloru
@@ -161,7 +159,7 @@ void AdminDAO::edytuj_konto()
 }
 
 //done
-void AdminDAO::dodaj_klienta()
+void KlientDAO::dodaj_klienta()
 {
 	string imie;
 	string nazwisko;
@@ -173,10 +171,16 @@ void AdminDAO::dodaj_klienta()
 	string nr_telefonu;
 	string mail;
 
+	MYSQL mysql;
+	stringstream zapytanie;
+
+
 	int i;
 	int hasloHASH; //wynik hashowania hasla
 
-				   //ustawienie koloru
+	HANDLE kolor; //uchwyt do koloru
+
+				  //ustawienie koloru
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	system("cls");
@@ -261,17 +265,22 @@ void AdminDAO::dodaj_klienta()
 }
 
 //done - nie testowane
-void AdminDAO::usun_klienta()
+void KlientDAO::usun_klienta()
 {
 	HANDLE kolor; //uchwyt do koloru
 	string imie;
 	string nazwisko;
 	string ID;
 
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
 	int i;
 	int konto_istnieje = 0; //sprawdza czy takie konto wgl istnieje
 
-							//ustawienie koloru
+	//ustawienie koloru
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	system("cls");
@@ -344,9 +353,19 @@ void AdminDAO::usun_klienta()
 }
 
 //done
-void AdminDAO::wyswietl_klientow()
+void KlientDAO::wyswietl_klientow()
 {
-	///////////////////laczenie z BD///////////////////////////////////////////////////////////
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
+	HANDLE kolor; //uchwyt do koloru
+
+	//ustawienie koloru
+	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
+
+				  ///////////////////laczenie z BD///////////////////////////////////////////////////////////
 	mysql_init(&mysql); // incjalizacja
 	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "kwiaciarnia", 0, NULL, 0);
 	mysql_select_db(&mysql, "kwiaciarnia");
@@ -379,7 +398,7 @@ void AdminDAO::wyswietl_klientow()
 
 //skladanie zamowienia-klient
 /*
-void AdminDAO::zloz_zamowienie()
+void KlientDAO::zloz_zamowienie()
 {
 string ID;
 int konto_istnieje_klient = 0;
@@ -529,11 +548,18 @@ system("Pause");
 
 
 //done - nie testowane
-void AdminDAO::wysw_zamowienia()
+void KlientDAO::wysw_zamowienia()
 {
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
 	string pesel;
 
-	///////////////////laczenie z BD///////////////////////////////////////////////////////////
+	HANDLE kolor; //uchwyt do koloru
+
+				  ///////////////////laczenie z BD///////////////////////////////////////////////////////////
 	mysql_init(&mysql); // incjalizacja
 	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "kwiaciarnia", 0, NULL, 0);
 	mysql_select_db(&mysql, "kwiaciarnia");
@@ -572,10 +598,17 @@ void AdminDAO::wysw_zamowienia()
 }
 
 //done - nie testowane
-void AdminDAO::anuluj_zamowienie()
+void KlientDAO::anuluj_zamowienie()
 {
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
 	string nr_zamowienia;
 	int zam_istnieje = 0;
+
+	HANDLE kolor; //uchwyt do koloru
 
 	system("cls");
 
@@ -643,11 +676,18 @@ void AdminDAO::anuluj_zamowienie()
 }
 
 //done-nie testowane
-void AdminDAO::zmien_status_zamowienia()
+void KlientDAO::zmien_status_zamowienia()
 {
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
 	string nr_zamowienia;
 	string info = "";
 	string status;
+
+	HANDLE kolor; //uchwyt do koloru
 
 	int wizyta_istnieje = 0; //sprawdza czy takie konto juz jest w BD
 
@@ -721,15 +761,22 @@ void AdminDAO::zmien_status_zamowienia()
 }
 
 //done-nie testowane
-void AdminDAO::wysw_opis_zamowienia()
+void KlientDAO::wysw_opis_zamowienia()
 {
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
 	string nr_zamowienia;
 
 	int i;
 	int hasloHASH; //wynik hashowania hasla
 	int wizyta_istnieje = 0; //sprawdza czy takie konto juz jest w BD
 
-							 //ustawienie koloru
+	HANDLE kolor; //uchwyt do koloru
+
+				  //ustawienie koloru
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	system("cls");
@@ -803,14 +850,21 @@ void AdminDAO::wysw_opis_zamowienia()
 }
 
 
-void AdminDAO::ilosc_pac_lek()
+void KlientDAO::ilosc_pac_lek()
 {
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
 	string ilosc_pac;
 	string ilosc_lek;
 	int pac_ilosc;
 	int lek_ilosc;
 
-	//ustawienie koloru
+	HANDLE kolor; //uchwyt do koloru
+
+				  //ustawienie koloru
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	system("cls");
@@ -866,14 +920,21 @@ void AdminDAO::ilosc_pac_lek()
 }
 
 
-void AdminDAO::ilosc_wiz_nfz_pryw()
+void KlientDAO::ilosc_wiz_nfz_pryw()
 {
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
 	string ilosc_nfz;
 	string ilosc_pryw;
 	int nfz;
 	int pryw;
 
-	//ustawienie koloru
+	HANDLE kolor; //uchwyt do koloru
+
+				  //ustawienie koloru
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	system("cls");
@@ -928,14 +989,21 @@ void AdminDAO::ilosc_wiz_nfz_pryw()
 }
 
 
-void AdminDAO::ilosc_wyk_nwyk()
+void KlientDAO::ilosc_wyk_nwyk()
 {
+	MYSQL mysql;
+	MYSQL_RES *idZapytania;
+	MYSQL_ROW  wiersz;
+	stringstream zapytanie;
+
 	string ilosc_wyk;
 	string ilosc_nwyk;
 	int wyk;
 	int nwyk;
 
-	//ustawienie koloru
+	HANDLE kolor; //uchwyt do koloru
+
+				  //ustawienie koloru
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	system("cls");

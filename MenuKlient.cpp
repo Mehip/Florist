@@ -33,7 +33,7 @@ int MenuKlient::menu(Osoba osoba)
 
 	HANDLE kolor; //uchwyt do koloru
 	Klient klient(osoba.login);
-	AdminDAO ADAO;
+	KlientDAO KDAO;
 
 	//ustawienie koloru
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -124,7 +124,7 @@ int MenuKlient::menu(Osoba osoba)
 				cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
 				cout << endl;
 
-				ADAO.edytuj_konto();
+				KDAO.edytuj_konto();
 				zatwierdzone = 0;
 			}
 
@@ -265,19 +265,19 @@ int MenuKlient::menu(Osoba osoba)
 						system("cls");
 						if (pozycja == 0) //dodaj klienta
 						{
-							ADAO.dodaj_klienta();
+							KDAO.dodaj_klienta();
 							zatwierdzonep2 = 0;
 						}
 
 						if (pozycja == 1) //usuwanie klientow
 						{
-							ADAO.usun_klienta();
+							KDAO.usun_klienta();
 							zatwierdzonep2 = 0;
 						}
 
 						if (pozycja == 2) //wyswietl klientow
 						{
-							ADAO.wyswietl_klientow();
+							KDAO.wyswietl_klientow();
 							zatwierdzonep2 = 0;
 						}
 					}
