@@ -12,8 +12,9 @@ using namespace std;
 class Klient :public Osoba
 {
 	string login;
+	string id;
 
 public:
 	friend class MenuKlient;
-	Klient(string);
+	Klient(string, string);
 };

@@ -23,16 +23,13 @@ int MenuKlient::menu(Osoba osoba)
 	int zatwierdzone = 0; //flaga sprawdzajaca czy dokonano wyboru w menu glownym
 	int zatwierdzonep1 = 0; //flaga sprawdzajaca czy dykonano wybory w podmenu 1
 	int zatwierdzonep2 = 0; //flaga sprawdzajaca czy dykonano wybory w podmenu 2
-	int zatwierdzonep3 = 0; //flaga sprawdzajaca czy dykonano wybory w podmenu 3
 
 	int zwrot; //zmienna zwracana do main
-	string menuG[9]; //Menu glowne
-	string menup1[4]; //podmenu 1 zamowienia
-	string menup2[6]; //podmenu 2 klienci
-	string menup3[3]; //podmenu 3 statystyki
+	string menuG[5]; //Menu glowne
+	string menup1[2]; //podmenu 1 zamowienia
+	string menup2[2]; //podmenu 2 statystyki
 
 	HANDLE kolor; //uchwyt do koloru
-	Klient klient(osoba.login);
 	KlientDAO KDAO;
 
 	//ustawienie koloru
@@ -44,22 +41,16 @@ int MenuKlient::menu(Osoba osoba)
 
 	menuG[0] = "Edycja konta";
 	menuG[1] = "Zamowienia";
-	menuG[2] = "Klienci";
-	menuG[3] = "Statystyki";
-	menuG[4] = "Wyloguj";
-	menuG[5] = "Zakoncz";
+	menuG[2] = "Statystyki";
+	menuG[3] = "Wyloguj";
+	menuG[4] = "Zakoncz";
 
 
 	menup1[0] = "Zloz zamowienia";
 	menup1[1] = "Wyswietl zamowienia";
 
-
-	menup2[0] = "Dodaj klienta";
-	menup2[1] = "Usun klienta";
-	menup2[2] = "Wyswietl klientow";
-
-	menup3[0] = "Ilosc zamowien";
-	menup3[1] = "Ilosc klientow";
+	menup2[0] = "Ilosc zamowien";
+	menup2[1] = "Ilosc klientow";
 
 
 	while (1) //menu glowne
@@ -69,7 +60,7 @@ int MenuKlient::menu(Osoba osoba)
 		SYSTEMTIME SystemTime;
 		GetLocalTime(&SystemTime);
 		SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-		cout << "Zalogowano jako: admin\t\t\t\t\t\t\t\t\t\t";
+		cout << "Zalogowano jako: "<< osoba.login << "\t\t\t\t\t\t\t\t\t\t";
 		cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
 		cout << endl;
 
@@ -77,7 +68,7 @@ int MenuKlient::menu(Osoba osoba)
 
 		strzalka = 0;
 
-		for (int i = 0; i < 6; i++) //podswietlanie wybranej opcji
+		for (int i = 0; i < 5; i++) //podswietlanie wybranej opcji
 		{
 			if (i == pozycja)
 			{
@@ -98,10 +89,10 @@ int MenuKlient::menu(Osoba osoba)
 			if (pozycja > 0)
 				pozycja--;
 			else
-				pozycja = 5;
+				pozycja = 4;
 			break;
 		case KEY_DOWN:
-			if (pozycja < 5)
+			if (pozycja < 4)
 				pozycja++;
 			else
 				pozycja = 0;
@@ -120,11 +111,11 @@ int MenuKlient::menu(Osoba osoba)
 				//wyswietlenie daty i godziny
 				GetLocalTime(&SystemTime);
 				SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-				cout << "Zalogowano jako: admin\t\t\t\t\t\t\t\t\t\t";
+				cout << "Zalogowano jako: " << osoba.login << "\t\t\t\t\t\t\t\t\t\t";
 				cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
 				cout << endl;
 
-				KDAO.edytuj_konto();
+				KDAO.edytuj_konto(osoba);
 				zatwierdzone = 0;
 			}
 
@@ -138,7 +129,7 @@ int MenuKlient::menu(Osoba osoba)
 					//wyswietlenie daty i godziny
 					GetLocalTime(&SystemTime);
 					SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-					cout << "Zalogowano jako: admin\t\t\t\t\t\t\t\t\t\t";
+					cout << "Zalogowano jako: " << osoba.login << "\t\t\t\t\t\t\t\t\t\t";
 					cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
 					cout << endl;
 
@@ -190,101 +181,20 @@ int MenuKlient::menu(Osoba osoba)
 						system("cls");
 						if (pozycja == 0) //zloz zamowienie
 						{
-							cout << "Zloz zamowienie" << endl;
+							KDAO.zloz_zamowienie(osoba);
 							zatwierdzonep1 = 0;
 						}
 
 						if (pozycja == 1) //wyswietl zamowienia
 						{
-							cout << "Wyswietl zamowienia" << endl;
+							KDAO.wysw_zamowienia(osoba);
 							zatwierdzonep1 = 0;
 						}
 					}
 				}
 			}
 
-			if (pozycja == 2) //klienci
-			{
-				pozycja = 0;
-
-				zatwierdzone = 0;
-
-				while (strzalka != 27) //warunek sprawdzajacy czy esc zostal nacisniety
-				{
-					system("cls");
-					//wyswietlenie daty i godziny
-					GetLocalTime(&SystemTime);
-					SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-					cout << "Zalogowano jako: admin\t\t\t\t\t\t\t\t\t\t";
-					cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
-					cout << endl;
-
-					SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
-
-					/////////////////////////////////////////////////////////////////////
-					for (int i = 0; i < 3; i++) //podswietlanie wybranej opcji
-					{
-						if (i == pozycja)
-						{
-							SetConsoleTextAttribute(kolor, FOREGROUND_RED);
-							cout << menup2[i] << endl;
-							SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
-						}
-						else
-						{
-							cout << menup2[i] << endl;
-						}
-					}
-
-					//////////////////////////////////////////////////////////////////////
-
-					strzalka = 0;
-
-					switch ((strzalka = _getch())) //zmiana pozycji za pomoca strzalek
-					{
-					case KEY_UP:
-						if (pozycja > 0)
-							pozycja--;
-						else
-							pozycja = 2;
-						break;
-					case KEY_DOWN:
-						if (pozycja < 2)
-							pozycja++;
-						else
-							pozycja = 0;
-						break;
-					case ENTER:
-						zatwierdzonep2 = 1;
-						break;
-					}
-
-					///////////////////////////////////////////////////////////////////////
-					while (zatwierdzonep2 == 1) //przejscie do opcji
-					{
-						system("cls");
-						if (pozycja == 0) //dodaj klienta
-						{
-							KDAO.dodaj_klienta();
-							zatwierdzonep2 = 0;
-						}
-
-						if (pozycja == 1) //usuwanie klientow
-						{
-							KDAO.usun_klienta();
-							zatwierdzonep2 = 0;
-						}
-
-						if (pozycja == 2) //wyswietl klientow
-						{
-							KDAO.wyswietl_klientow();
-							zatwierdzonep2 = 0;
-						}
-					}
-				}
-			}
-
-			if (pozycja == 3) //statystyki
+			if (pozycja == 2) //statystyki
 			{
 				pozycja = 0;
 
@@ -297,7 +207,7 @@ int MenuKlient::menu(Osoba osoba)
 					//wyswietlenie daty i godziny
 					GetLocalTime(&SystemTime);
 					SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-					cout << "Zalogowano jako: admin\t\t\t\t\t\t\t\t\t\t";
+					cout << "Zalogowano jako: " << osoba.login << "\t\t\t\t\t\t\t\t\t\t";
 					cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
 					cout << endl;
 
@@ -309,12 +219,12 @@ int MenuKlient::menu(Osoba osoba)
 						if (i == pozycja)
 						{
 							SetConsoleTextAttribute(kolor, FOREGROUND_RED);
-							cout << menup3[i] << endl;
+							cout << menup2[i] << endl;
 							SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
 						}
 						else
 						{
-							cout << menup3[i] << endl;
+							cout << menup2[i] << endl;
 						}
 					}
 
@@ -337,36 +247,36 @@ int MenuKlient::menu(Osoba osoba)
 							pozycja = 0;
 						break;
 					case ENTER:
-						zatwierdzonep3 = 1;
+						zatwierdzonep2 = 1;
 						break;
 					}
 
 					///////////////////////////////////////////////////////////////////////
-					while (zatwierdzonep3 == 1) //przejscie do opcji
+					while (zatwierdzonep2 == 1) //przejscie do opcji
 					{
 						system("cls");
 						if (pozycja == 0) //Ilosc zamowien
 						{
 							cout << "Ilosc zamowien" << endl;
-							zatwierdzonep3 = 0;
+							zatwierdzonep2 = 0;
 						}
 
 						if (pozycja == 1) //Ilosc klientow
 						{
 							cout << "Ilosc klientow" << endl;
-							zatwierdzonep3 = 0;
+							zatwierdzonep2 = 0;
 						}
 					}
 				}
 			}
 
-			if (pozycja == 4) //wyloguj
+			if (pozycja == 3) //wyloguj
 			{
 				zwrot = 0;
 				return zwrot;
 			}
 
-			if (pozycja == 5) //zakoncz
+			if (pozycja == 4) //zakoncz
 			{
 				zwrot = 1;
 				return zwrot;

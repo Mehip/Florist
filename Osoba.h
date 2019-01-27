@@ -9,14 +9,16 @@ using namespace std;
 
 class Osoba
 {
-	string login;
-
 public:
+	string login;
+	string id;
+
 	friend class MenuAdmin;
 	friend class MenuKlient;
 
-	Osoba(string login)
+	Osoba(string login, string id)
 	{
 		this->login = login;
+		this->id = id;
 	}
 };

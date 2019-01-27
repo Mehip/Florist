@@ -84,14 +84,14 @@ int main(int argc, const char * argv[])
 				if (wiersz[i+1] == login && stoi(wiersz[i + 2]) == hashValue<unsigned int>(haslo))
 				{
 					//zalogowano
-					pesel = wiersz[i];
 					typ_konta = wiersz[i + 3];
+					string id = "1";
 					Menu *mglowne;
-					Osoba osoba(pesel);
 					//sprawdzanie typu konta i wybranie odpowiedniego menu
 					if (typ_konta == "administrator") //konto admina
 					{
 						//tworzenie obiektow i przypisanie wskaznika polimorficznego
+						Osoba osoba(login, id);
 						MenuAdmin madmin;
 						mglowne = &madmin;
 						koniec = mglowne->menu(osoba);
@@ -105,7 +105,7 @@ int main(int argc, const char * argv[])
 					if (typ_konta == "klient") //konto klienta
 					{
 						system("cls");
-						cout << "Zalogowano jako: " << login << endl;
+						Osoba osoba(login,wiersz[i]);
 						MenuKlient mklient;
 						mglowne = &mklient;
 						koniec = mglowne->menu(osoba);

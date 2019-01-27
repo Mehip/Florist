@@ -11,8 +11,9 @@ using namespace std;
 class Admin :public Osoba
 {
 	string login;
+	string id;
 
 public:
 	friend class MenuAdmin;
-	Admin(string);
+	Admin(string, string);
 };

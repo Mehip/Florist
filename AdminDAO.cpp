@@ -264,7 +264,7 @@ void AdminDAO::dodaj_klienta()
 	mysql_close(&mysql); // zamknij po³¹czenie
 }
 
-//done - nie testowane
+//done
 void AdminDAO::usun_klienta()
 {
 	HANDLE kolor; //uchwyt do koloru
@@ -343,7 +343,7 @@ void AdminDAO::usun_klienta()
 		mysql_query(&mysql, zapytanie.str().c_str());
 
 		stringstream().swap(zapytanie);
-		zapytanie << "DELETE FROM LOGOWANIE WHERE ID_KLIENTA = '" << ID << "';";
+		zapytanie << "DELETE FROM LOGOWANIE WHERE ID_KLIENTA = '" << stoi(ID)+1 << "';";
 		mysql_query(&mysql, zapytanie.str().c_str());
 
 		cout << "Uzytkownik zostal usuniety!!!" << endl;
@@ -395,6 +395,7 @@ void AdminDAO::wyswietl_klientow()
 	system("cls");
 	mysql_close(&mysql); // zamknij po³¹czenie
 }
+
 
 //skladanie zamowienia-klient
 /*
@@ -559,6 +560,9 @@ void AdminDAO::wysw_zamowienia()
 
 	HANDLE kolor; //uchwyt do koloru
 
+	 //ustawienie koloru
+	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
+
 	///////////////////laczenie z BD///////////////////////////////////////////////////////////
 	mysql_init(&mysql); // incjalizacja
 	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "kwiaciarnia", 0, NULL, 0);
@@ -696,6 +700,11 @@ void AdminDAO::zmien_status_zamowienia()
 
 	system("cls");
 
+	///////////////////laczenie z BD///////////////////////////////////////////////////////////
+	mysql_init(&mysql); // incjalizacja
+	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "kwiaciarnia", 0, NULL, 0);
+	mysql_select_db(&mysql, "kwiaciarnia");
+
 	////////////////////////////////////wyswietlenie daty i godziny///////////////////////////////////
 	SYSTEMTIME SystemTime;
 	GetLocalTime(&SystemTime);
@@ -709,7 +718,7 @@ void AdminDAO::zmien_status_zamowienia()
 	cout << "Lista zamowien: " << endl;
 	SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
 
-	////////////////////////WYSWIETLENIE LISTY PACJENTOW////////////////////
+	////////////////////////WYSWIETLENIE LISTY ////////////////////
 	stringstream().swap(zapytanie);
 	zapytanie << "SELECT * FROM ZAMOWIENIA;";
 	mysql_query(&mysql, zapytanie.str().c_str());
@@ -746,7 +755,7 @@ void AdminDAO::zmien_status_zamowienia()
 		cout << "ZMIANA STATUSU ZAMOWIENIA" << endl;
 		SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
 
-		cout << "Status wizyty(Realizowana/Zakonczona): ";
+		cout << "Status wizyty (REALIZOWANA/ZAKONCZONA): ";
 		cin >> status;
 	}
 	else
@@ -761,27 +770,23 @@ void AdminDAO::zmien_status_zamowienia()
 }
 
 //done-nie testowane
-void AdminDAO::wysw_opis_zamowienia()
+void AdminDAO::historia_zamowien()
 {
 	MYSQL mysql;
 	MYSQL_RES *idZapytania;
 	MYSQL_ROW  wiersz;
 	stringstream zapytanie;
 
-	string nr_zamowienia;
-
-	int i;
-	int hasloHASH; //wynik hashowania hasla
-	int wizyta_istnieje = 0; //sprawdza czy takie konto juz jest w BD
+	string pesel;
 
 	HANDLE kolor; //uchwyt do koloru
 
-	//ustawienie koloru
-	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
+				  ///////////////////laczenie z BD///////////////////////////////////////////////////////////
+	mysql_init(&mysql); // incjalizacja
+	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "kwiaciarnia", 0, NULL, 0);
+	mysql_select_db(&mysql, "kwiaciarnia");
 
-	system("cls");
-
-	////////////////////////////////////wyswietlenie daty i godziny///////////////////////////////////
+	//////////////////wyswietlenie daty i godziny///////////////////////////////////////////////
 	SYSTEMTIME SystemTime;
 	GetLocalTime(&SystemTime);
 	SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
@@ -789,63 +794,28 @@ void AdminDAO::wysw_opis_zamowienia()
 	cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
 	cout << endl;
 
+
+	int i;
+
+	//ustawienie koloru
+	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
+
 	///////////////////////////////////////TYTUL///////////////////////////////////////////////
 	SetConsoleTextAttribute(kolor, FOREGROUND_RED);
 	cout << "Lista wizyt: " << endl;
-	SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-
-	////////////////////////WYSWIETLENIE LISTY PACJENTOW////////////////////
-	stringstream().swap(zapytanie);
-	zapytanie << "SELECT * FROM ZAMOWIENIA;";
-	mysql_query(&mysql, zapytanie.str().c_str());
-	idZapytania = mysql_store_result(&mysql);
-
-	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-	{
-		cout << wiersz[0] << " " << wiersz[1] << " " << wiersz[2] << endl;
-	}
-
-	cout << endl;
 	SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
 
-	cout << "Nr. zamowienia: ";
-	cin >> nr_zamowienia;
 
-	////////////////////////////SPRAWDZENIE CZY KONTO ISTNIEJE////////////////////////////
 	stringstream().swap(zapytanie);
-	zapytanie << "SELECT NR_ZAMOWIENIA FROM ZAMOWIENIA WHERE NR_ZAMOWIENIA = '" << nr_zamowienia << "';";
+	zapytanie << "SELECT * FROM ZAMOWIENIA WHERE STAT_ZAMOWIENIA = 'ZAKONCZONA';";
 	mysql_query(&mysql, zapytanie.str().c_str());
 	idZapytania = mysql_store_result(&mysql);
 
 	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-	{
-		wizyta_istnieje = 1;
-	}
+		cout << wiersz[0] << " " << wiersz[1] << " " << wiersz[2] << " " << endl;
 
-
-	if (wizyta_istnieje == 1) ///////////////////////GDY KONTO ISTNIEJE////////////////////////////////////////
-	{
-		system("cls");
-		cout << "OPIS WIZYTY: " << endl << endl;
-		stringstream().swap(zapytanie);
-		zapytanie << "SELECT OPIS FROM ZAMOWIENIA WHERE NR_ZAMOWIENIA = '" << nr_zamowienia << "';";
-		mysql_query(&mysql, zapytanie.str().c_str());
-		idZapytania = mysql_store_result(&mysql);
-
-		while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-		{
-			cout << wiersz[0] << endl;
-		}
-
-		system("Pause");
-	}
-	else
-	{
-		cout << "Podana wizyta nie znajduje sie w bazie danych!!!" << endl;
-		system("Pause");
-		system("cls");
-	}
-
+	system("Pause");
+	system("cls");
 	mysql_close(&mysql); // zamknij po³¹czenie
 }
 

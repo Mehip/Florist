@@ -32,7 +32,6 @@ int MenuAdmin::menu(Osoba osoba)
 	string menup3[3]; //podmenu 3 statystyki
 
 	HANDLE kolor; //uchwyt do koloru
-	Admin admin(osoba.login);
 	AdminDAO ADAO;
 
 	//ustawienie koloru
@@ -52,6 +51,7 @@ int MenuAdmin::menu(Osoba osoba)
 
 	menup1[0] = "Zloz zamowienia";
 	menup1[1] = "Wyswietl zamowienia";
+	menup1[2] = "Zmien status zamowienia";
 
 
 	menup2[0] = "Dodaj klienta";
@@ -147,7 +147,7 @@ int MenuAdmin::menu(Osoba osoba)
 					zatwierdzone = 0;
 
 					/////////////////////////////////////////////////////////////////////
-					for (int i = 0; i < 2; i++) //podswietlanie wybranej opcji
+					for (int i = 0; i < 3; i++) //podswietlanie wybranej opcji
 					{
 						if (i == pozycja)
 						{
@@ -171,10 +171,10 @@ int MenuAdmin::menu(Osoba osoba)
 						if (pozycja > 0)
 							pozycja--;
 						else
-							pozycja = 1;
+							pozycja = 2;
 						break;
 					case KEY_DOWN:
-						if (pozycja < 1)
+						if (pozycja < 2)
 							pozycja++;
 						else
 							pozycja = 0;
@@ -196,7 +196,13 @@ int MenuAdmin::menu(Osoba osoba)
 
 						if (pozycja == 1) //wyswietl zamowienia
 						{
-							cout << "Wyswietl zamowienia" << endl;
+							ADAO.wysw_zamowienia();
+							zatwierdzonep1 = 0;
+						}
+
+						if (pozycja == 2)
+						{
+							ADAO.zmien_status_zamowienia();
 							zatwierdzonep1 = 0;
 						}
 					}
