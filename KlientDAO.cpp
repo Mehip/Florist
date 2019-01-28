@@ -74,6 +74,38 @@ string KlientDAO::walidacjaNrTel(string numer)
 }
 
 //done
+int KlientDAO::walidacjaNrTel(int numer)
+{
+	int ilosc;
+
+	int num = numer;
+
+	while (1)
+	{
+		ilosc = 0;
+
+		for (int i = 0; i < 9; i++)
+		{
+			num = [](int number)->int { return  number / 10; }(num);
+
+			if (num == 0)
+				ilosc++;
+		}
+
+		if (ilosc == 1)
+		{
+			return numer;
+		}
+		else
+		{
+			cout << "Wprowadzono blednie numer telefonu!!!" << endl;
+			cout << "Nr. telefonu: ";
+			cin >> numer;
+		}
+	}
+}
+
+//done
 string KlientDAO::walidacjaMail(string mail)
 {
 	int kropka = 0;
@@ -406,238 +438,63 @@ void KlientDAO::historia_zamowien(Osoba osoba)
 	MYSQL_ROW  wiersz;
 	stringstream zapytanie;
 
-	string nr_zamowienia;
-
-	int i;
-	int hasloHASH; //wynik hashowania hasla
-	int wizyta_istnieje = 0; //sprawdza czy takie konto juz jest w BD
+	string pesel;
 
 	HANDLE kolor; //uchwyt do koloru
-
 				  //ustawienie koloru
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
+	///////////////////laczenie z BD///////////////////////////////////////////////////////////
+	mysql_init(&mysql); // incjalizacja
+	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "kwiaciarnia", 0, NULL, 0);
+	mysql_select_db(&mysql, "kwiaciarnia");
 
-	system("cls");
-
-	////////////////////////////////////wyswietlenie daty i godziny///////////////////////////////////
+	//////////////////wyswietlenie daty i godziny///////////////////////////////////////////////
 	SYSTEMTIME SystemTime;
 	GetLocalTime(&SystemTime);
 	SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
 	cout << "Zalogowano jako: " << osoba.login << "\t\t\t\t\t\t\t\t\t\t";
 	cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
 	cout << endl;
+
+
+	int i;
+
+	//ustawienie koloru
+	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	///////////////////////////////////////TYTUL///////////////////////////////////////////////
 	SetConsoleTextAttribute(kolor, FOREGROUND_RED);
-	cout << "Lista wizyt: " << endl;
-	SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-
-	////////////////////////WYSWIETLENIE LISTY PACJENTOW////////////////////
-	stringstream().swap(zapytanie);
-	zapytanie << "SELECT * FROM ZAMOWIENIA;";
-	mysql_query(&mysql, zapytanie.str().c_str());
-	idZapytania = mysql_store_result(&mysql);
-
-	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-	{
-		cout << wiersz[0] << " " << wiersz[1] << " " << wiersz[2] << endl;
-	}
-
-	cout << endl;
+	cout << "HISTORIA ZAMOWIEN: " << endl;
 	SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
 
-	cout << "Nr. zamowienia: ";
-	cin >> nr_zamowienia;
 
-	////////////////////////////SPRAWDZENIE CZY KONTO ISTNIEJE////////////////////////////
 	stringstream().swap(zapytanie);
-	zapytanie << "SELECT NR_ZAMOWIENIA FROM ZAMOWIENIA WHERE NR_ZAMOWIENIA = '" << nr_zamowienia << "';";
+	zapytanie << "SELECT * FROM ZAMOWIENIA WHERE ID_KLIENTA = '" << stoi(osoba.id) - 1 << "' AND STAT_ZAMOWIENIA = 'ZAKONCZONE';";
 	mysql_query(&mysql, zapytanie.str().c_str());
 	idZapytania = mysql_store_result(&mysql);
 
 	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
 	{
-		wizyta_istnieje = 1;
+		cout << wiersz[0] << " " << wiersz[2] << " " << wiersz[3] << endl;
+		cout << endl;
 	}
 
-
-	if (wizyta_istnieje == 1) ///////////////////////GDY KONTO ISTNIEJE////////////////////////////////////////
-	{
-		system("cls");
-		cout << "OPIS WIZYTY: " << endl << endl;
-		stringstream().swap(zapytanie);
-		zapytanie << "SELECT OPIS FROM ZAMOWIENIA WHERE NR_ZAMOWIENIA = '" << nr_zamowienia << "';";
-		mysql_query(&mysql, zapytanie.str().c_str());
-		idZapytania = mysql_store_result(&mysql);
-
-		while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-		{
-			cout << wiersz[0] << endl;
-		}
-
-		system("Pause");
-	}
-	else
-	{
-		cout << "Podana wizyta nie znajduje sie w bazie danych!!!" << endl;
-		system("Pause");
-		system("cls");
-	}
-
-	mysql_close(&mysql); // zamknij po³¹czenie
-}
-
-
-void KlientDAO::ilosc_pac_lek(Osoba osoba)
-{
-	MYSQL mysql;
-	MYSQL_RES *idZapytania;
-	MYSQL_ROW  wiersz;
-	stringstream zapytanie;
-
-	string ilosc_pac;
-	string ilosc_lek;
-	int pac_ilosc;
-	int lek_ilosc;
-
-	HANDLE kolor; //uchwyt do koloru
-
-				  //ustawienie koloru
-	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	system("cls");
-
-	///////////////////laczenie z BD///////////////////////////////////////////////////////////
-	mysql_init(&mysql); // incjalizacja
-	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "przychodnie", 0, NULL, 0);
-	mysql_select_db(&mysql, "przychodnie");
-
-	////////////////////////////////////wyswietlenie daty i godziny///////////////////////////////////
-	SYSTEMTIME SystemTime;
-	GetLocalTime(&SystemTime);
-	SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-	cout << "Zalogowano jako: " << osoba.login << "\t\t\t\t\t\t\t\t\t\t";
-	cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
-	cout << endl;
-
-	SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	stringstream().swap(zapytanie);
-	zapytanie << "SELECT COUNT(PESEL) FROM LEKARZ;";
-	mysql_query(&mysql, zapytanie.str().c_str());
-	idZapytania = mysql_store_result(&mysql);
-
-	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-	{
-		ilosc_lek = wiersz[0];
-	}
-
-	cout << endl;
-
-	stringstream().swap(zapytanie);
-	zapytanie << "SELECT COUNT(PESEL) FROM PACJENT;";
-	mysql_query(&mysql, zapytanie.str().c_str());
-	idZapytania = mysql_store_result(&mysql);
-
-	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-	{
-		ilosc_pac = wiersz[0];
-	}
-
-	cout << endl;
-
-	pac_ilosc = stoi(ilosc_pac);
-	lek_ilosc = stoi(ilosc_lek);
-
-	cout << "Ilosc lekarzy: " << lek_ilosc << endl;
-	cout << "Ilosc pacjentow: " << pac_ilosc << endl;
-	cout << "Ilosc pacjentow na jednego lekarza: " << pac_ilosc / lek_ilosc << endl;
 	system("Pause");
-
-	mysql_close(&mysql); // zamknij po³¹czenie
-}
-
-
-void KlientDAO::ilosc_wiz_nfz_pryw(Osoba osoba)
-{
-	MYSQL mysql;
-	MYSQL_RES *idZapytania;
-	MYSQL_ROW  wiersz;
-	stringstream zapytanie;
-
-	string ilosc_nfz;
-	string ilosc_pryw;
-	int nfz;
-	int pryw;
-
-	HANDLE kolor; //uchwyt do koloru
-
-				  //ustawienie koloru
-	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
-
 	system("cls");
-
-	///////////////////laczenie z BD///////////////////////////////////////////////////////////
-	mysql_init(&mysql); // incjalizacja
-	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "przychodnie", 0, NULL, 0);
-	mysql_select_db(&mysql, "przychodnie");
-
-	////////////////////////////////////wyswietlenie daty i godziny///////////////////////////////////
-	SYSTEMTIME SystemTime;
-	GetLocalTime(&SystemTime);
-	SetConsoleTextAttribute(kolor, FOREGROUND_BLUE);
-	cout << "Zalogowano jako: " << osoba.login << "\t\t\t\t\t\t\t\t\t\t";
-	cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
-	cout << endl;
-
-	SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	stringstream().swap(zapytanie);
-	zapytanie << "SELECT COUNT(NR_WIZYTY) FROM WIZYTY WHERE TYP_WIZYTY = 'nfz';";
-	mysql_query(&mysql, zapytanie.str().c_str());
-	idZapytania = mysql_store_result(&mysql);
-
-	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-	{
-		ilosc_nfz = wiersz[0];
-	}
-
-	cout << endl;
-
-	stringstream().swap(zapytanie);
-	zapytanie << "SELECT COUNT(NR_WIZYTY) FROM WIZYTY WHERE TYP_WIZYTY = 'prywatna';";
-	mysql_query(&mysql, zapytanie.str().c_str());
-	idZapytania = mysql_store_result(&mysql);
-
-	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
-	{
-		ilosc_pryw = wiersz[0];
-	}
-
-	cout << endl;
-
-	nfz = stoi(ilosc_nfz);
-	pryw = stoi(ilosc_pryw);
-
-	cout << "Ilosc wizyt nfz: " << nfz << endl;
-	cout << "Ilosc wizyt prywatnych: " << pryw << endl;
-	system("Pause");
-
 	mysql_close(&mysql); // zamknij po³¹czenie
 }
 
 
-void KlientDAO::ilosc_wyk_nwyk(Osoba osoba)
+void KlientDAO::ilosc_zak_rel_zle(Osoba osoba)
 {
 	MYSQL mysql;
 	MYSQL_RES *idZapytania;
 	MYSQL_ROW  wiersz;
 	stringstream zapytanie;
 
+	string ilosc_zle;
 	string ilosc_wyk;
-	string ilosc_nwyk;
-	int wyk;
-	int nwyk;
+	string ilosc_rel;
 
 	HANDLE kolor; //uchwyt do koloru
 
@@ -645,11 +502,6 @@ void KlientDAO::ilosc_wyk_nwyk(Osoba osoba)
 	kolor = GetStdHandle(STD_OUTPUT_HANDLE);
 
 	system("cls");
-
-	///////////////////laczenie z BD///////////////////////////////////////////////////////////
-	mysql_init(&mysql); // incjalizacja
-	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "przychodnie", 0, NULL, 0);
-	mysql_select_db(&mysql, "przychodnie");
 
 	////////////////////////////////////wyswietlenie daty i godziny///////////////////////////////////
 	SYSTEMTIME SystemTime;
@@ -659,10 +511,27 @@ void KlientDAO::ilosc_wyk_nwyk(Osoba osoba)
 	cout << SystemTime.wHour << ":" << SystemTime.wMinute << "\t" << SystemTime.wYear << "/" << SystemTime.wDay << "/" << SystemTime.wMonth << endl;
 	cout << endl;
 
+	///////////////////laczenie z BD///////////////////////////////////////////////////////////
+	mysql_init(&mysql); // incjalizacja
+	mysql_real_connect(&mysql, "127.0.0.1", "root", "maciek", "kwiaciarnia", 0, NULL, 0);
+	mysql_select_db(&mysql, "kwiaciarnia");
+
+
+
 	SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	stringstream().swap(zapytanie);
-	zapytanie << "SELECT COUNT(NR_WIZYTY) FROM WIZYTY WHERE STATUS_WIZ = 'Wykonana';";
+	zapytanie << "SELECT COUNT(NR_ZAMOWIENIA) FROM ZAMOWIENIA WHERE STAT_ZAMOWIENIA = 'REALIZOWANE' AND ID_KLIENTA = " << stoi(osoba.id)-1 << ";";
+	mysql_query(&mysql, zapytanie.str().c_str());
+	idZapytania = mysql_store_result(&mysql);
+
+	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
+	{
+		ilosc_rel = wiersz[0];
+	}
+
+	stringstream().swap(zapytanie);
+	zapytanie << "SELECT COUNT(NR_ZAMOWIENIA) FROM ZAMOWIENIA WHERE STAT_ZAMOWIENIA = 'ZAKONCZONE' AND ID_KLIENTA = " << stoi(osoba.id) - 1 << ";";
 	mysql_query(&mysql, zapytanie.str().c_str());
 	idZapytania = mysql_store_result(&mysql);
 
@@ -671,26 +540,19 @@ void KlientDAO::ilosc_wyk_nwyk(Osoba osoba)
 		ilosc_wyk = wiersz[0];
 	}
 
-	cout << endl;
-
 	stringstream().swap(zapytanie);
-	zapytanie << "SELECT COUNT(NR_WIZYTY) FROM WIZYTY WHERE STATUS_WIZ = 'Wykonana';";
+	zapytanie << "SELECT COUNT(NR_ZAMOWIENIA) FROM ZAMOWIENIA WHERE STAT_ZAMOWIENIA = 'DO ZATWIERDZENIA' AND ID_KLIENTA = " << stoi(osoba.id) - 1 << ";";
 	mysql_query(&mysql, zapytanie.str().c_str());
 	idZapytania = mysql_store_result(&mysql);
 
 	while ((wiersz = mysql_fetch_row(idZapytania)) != NULL)
 	{
-		ilosc_nwyk = wiersz[0];
+		ilosc_zle = wiersz[0];
 	}
 
-	cout << endl;
-
-	wyk = stoi(ilosc_wyk);
-	nwyk = stoi(ilosc_nwyk);
-
-	cout << "Ilosc wizyt wykonanych: " << wyk << endl;
-	cout << "Ilosc wizyt niewykonanych: " << nwyk << endl;
-	cout << "Stosunek wizyt wykonanych do niewykonanych: " << wyk / nwyk << endl;
+	cout << "Ilosc zleconych: " << ilosc_zle << endl;
+	cout << "Ilosc realizowanych: " << ilosc_rel << endl;
+	cout << "Ilosc zakonczonych: " << ilosc_wyk << endl;
 	system("Pause");
 
 	mysql_close(&mysql); // zamknij po³¹czenie

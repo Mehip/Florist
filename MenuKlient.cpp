@@ -4,6 +4,8 @@
 #include <conio.h>
 #include <iostream>
 
+#include <vector>
+
 #include "MenuKlient.h"
 #include "Osoba.h"
 #include "Klient.h"
@@ -25,8 +27,8 @@ int MenuKlient::menu(Osoba osoba)
 	int zatwierdzonep2 = 0; //flaga sprawdzajaca czy dykonano wybory w podmenu 2
 
 	int zwrot; //zmienna zwracana do main
-	string menuG[5]; //Menu glowne
-	string menup1[2]; //podmenu 1 zamowienia
+	vector <string> menuG;
+	string menup1[3]; //podmenu 1 zamowienia
 	string menup2[2]; //podmenu 2 statystyki
 
 	HANDLE kolor; //uchwyt do koloru
@@ -39,18 +41,18 @@ int MenuKlient::menu(Osoba osoba)
 	//////////////////////////////////////////MENU ADMINA///////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	menuG[0] = "Edycja konta";
-	menuG[1] = "Zamowienia";
-	menuG[2] = "Statystyki";
-	menuG[3] = "Wyloguj";
-	menuG[4] = "Zakoncz";
+	menuG.push_back("Edycja konta");
+	menuG.push_back("Zamowienia");
+	menuG.push_back("Statystyki");
+	menuG.push_back("Wyloguj");
+	menuG.push_back("Zakoncz");
 
 
 	menup1[0] = "Zloz zamowienia";
 	menup1[1] = "Wyswietl zamowienia";
+	menup1[2] = "Historia zamowien";
 
-	menup2[0] = "Ilosc zamowien";
-	menup2[1] = "Ilosc klientow";
+	menup2[0] = "Ilosc zleconych,zatwierdzonych i wykonanych zlecen";
 
 
 	while (1) //menu glowne
@@ -138,7 +140,7 @@ int MenuKlient::menu(Osoba osoba)
 					zatwierdzone = 0;
 
 					/////////////////////////////////////////////////////////////////////
-					for (int i = 0; i < 2; i++) //podswietlanie wybranej opcji
+					for (int i = 0; i < 3; i++) //podswietlanie wybranej opcji
 					{
 						if (i == pozycja)
 						{
@@ -162,10 +164,10 @@ int MenuKlient::menu(Osoba osoba)
 						if (pozycja > 0)
 							pozycja--;
 						else
-							pozycja = 1;
+							pozycja = 2;
 						break;
 					case KEY_DOWN:
-						if (pozycja < 1)
+						if (pozycja < 2)
 							pozycja++;
 						else
 							pozycja = 0;
@@ -188,6 +190,12 @@ int MenuKlient::menu(Osoba osoba)
 						if (pozycja == 1) //wyswietl zamowienia
 						{
 							KDAO.wysw_zamowienia(osoba);
+							zatwierdzonep1 = 0;
+						}
+
+						if (pozycja == 2)
+						{
+							KDAO.historia_zamowien(osoba);
 							zatwierdzonep1 = 0;
 						}
 					}
@@ -214,7 +222,7 @@ int MenuKlient::menu(Osoba osoba)
 					SetConsoleTextAttribute(kolor, FOREGROUND_GREEN);
 
 					/////////////////////////////////////////////////////////////////////
-					for (int i = 0; i < 2; i++) //podswietlanie wybranej opcji
+					for (int i = 0; i < 1; i++) //podswietlanie wybranej opcji
 					{
 						if (i == pozycja)
 						{
@@ -238,10 +246,10 @@ int MenuKlient::menu(Osoba osoba)
 						if (pozycja > 0)
 							pozycja--;
 						else
-							pozycja = 1;
+							pozycja = 0;
 						break;
 					case KEY_DOWN:
-						if (pozycja < 1)
+						if (pozycja < 0)
 							pozycja++;
 						else
 							pozycja = 0;
@@ -257,13 +265,7 @@ int MenuKlient::menu(Osoba osoba)
 						system("cls");
 						if (pozycja == 0) //Ilosc zamowien
 						{
-							cout << "Ilosc zamowien" << endl;
-							zatwierdzonep2 = 0;
-						}
-
-						if (pozycja == 1) //Ilosc klientow
-						{
-							cout << "Ilosc klientow" << endl;
+							KDAO.ilosc_zak_rel_zle(osoba);
 							zatwierdzonep2 = 0;
 						}
 					}

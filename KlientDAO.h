@@ -14,14 +14,13 @@ class  KlientDAO
 	unsigned int hashValue(string); //done
 	string walidacjaKodPocztowy(string); //done
 	string walidacjaNrTel(string); //done
+	int walidacjaNrTel(int); //done
 	string walidacjaMail(string); //done
 public:
 	void edytuj_konto(Osoba osoba); //done
-	void zloz_zamowienie(Osoba osoba);
-	void wysw_zamowienia(Osoba osoba);
-	void anuluj_zamowienie(Osoba osoba);
-	void historia_zamowien(Osoba osoba);
-	void ilosc_pac_lek(Osoba osoba);
-	void ilosc_wiz_nfz_pryw(Osoba osoba);
-	void ilosc_wyk_nwyk(Osoba osoba);
+	void zloz_zamowienie(Osoba osoba); //done
+	void wysw_zamowienia(Osoba osoba); //done
+	void anuluj_zamowienie(Osoba osoba); //done
+	void historia_zamowien(Osoba osoba); //done
+	void ilosc_zak_rel_zle(Osoba osoba); //done
 };

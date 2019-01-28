@@ -20,11 +20,11 @@ public:
 	void dodaj_klienta(); //done
 	void wyswietl_klientow(); //done
 	void usun_klienta(); //done
-	void zloz_zamowienie();
-	void wysw_zamowienia();
-	void anuluj_zamowienie();
-	void zmien_status_zamowienia();
-	void historia_zamowien();
-	void ilosc_zak_rel_zle();
-	void ilosc_klientow();
+	void zloz_zamowienie(); //done
+	void wysw_zamowienia(); //done
+	void anuluj_zamowienie(); //done
+	void zmien_status_zamowienia(); //done
+	void historia_zamowien(); //done
+	void ilosc_zak_rel_zle(); //done
+	void ilosc_klientow(); //done
 };
