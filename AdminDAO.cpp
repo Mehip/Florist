@@ -13,6 +13,7 @@ using namespace std;
 #define KEY_DOWN 80
 #define ENTER 13
 
+//git
 //done
 unsigned int AdminDAO::hashValue(string key) //funkcja hashujaca
 {
