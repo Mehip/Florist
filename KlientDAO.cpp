@@ -305,7 +305,7 @@ void KlientDAO::wysw_zamowienia(Osoba osoba)
 
 
 	stringstream().swap(zapytanie);
-	zapytanie << "SELECT * FROM ZAMOWIENIA WHERE ID_KLIENTA = '" << stoi(osoba.id)-1 << "';";
+	zapytanie << "SELECT * FROM ZAMOWIENIA WHERE ID_KLIENTA = '" << stoi(osoba.id)-1 << "' AND STAT_ZAMOWIENIA <> 'ZAKONCZONE';";
 	mysql_query(&mysql, zapytanie.str().c_str());
 	idZapytania = mysql_store_result(&mysql);
 
@@ -320,7 +320,7 @@ void KlientDAO::wysw_zamowienia(Osoba osoba)
 	mysql_close(&mysql); // zamknij po³¹czenie
 }
 
-//done - nie testowane
+//done
 void KlientDAO::anuluj_zamowienie(Osoba osoba)
 {
 	MYSQL mysql;
@@ -398,7 +398,7 @@ void KlientDAO::anuluj_zamowienie(Osoba osoba)
 	}
 }
 
-//done-nie testowane
+//done
 void KlientDAO::historia_zamowien(Osoba osoba)
 {
 	MYSQL mysql;

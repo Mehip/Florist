@@ -48,17 +48,17 @@ int MenuAdmin::menu(Osoba osoba)
 	menuG[4] = "Wyloguj";
 	menuG[5] = "Zakoncz";
 
-
-	menup1[0] = "Zloz zamowienia";
-	menup1[1] = "Wyswietl zamowienia";
-	menup1[2] = "Zmien status zamowienia";
+	menup1[0] = "Wyswietl zamowienia";
+	menup1[1] = "Zmien status zamowienia";
+	menup1[2] = "Anuluj zamowienie";
+	menup1[3] = "Historia zamowien";
 
 
 	menup2[0] = "Dodaj klienta";
 	menup2[1] = "Usun klienta";
 	menup2[2] = "Wyswietl klientow";
 
-	menup3[0] = "Ilosc zamowien";
+	menup3[0] = "Ilosc zleconych,realizowanych i zakonczonych zlecen";
 	menup3[1] = "Ilosc klientow";
 
 
@@ -147,7 +147,7 @@ int MenuAdmin::menu(Osoba osoba)
 					zatwierdzone = 0;
 
 					/////////////////////////////////////////////////////////////////////
-					for (int i = 0; i < 3; i++) //podswietlanie wybranej opcji
+					for (int i = 0; i < 4; i++) //podswietlanie wybranej opcji
 					{
 						if (i == pozycja)
 						{
@@ -171,10 +171,10 @@ int MenuAdmin::menu(Osoba osoba)
 						if (pozycja > 0)
 							pozycja--;
 						else
-							pozycja = 2;
+							pozycja = 3;
 						break;
 					case KEY_DOWN:
-						if (pozycja < 2)
+						if (pozycja < 3)
 							pozycja++;
 						else
 							pozycja = 0;
@@ -188,21 +188,28 @@ int MenuAdmin::menu(Osoba osoba)
 					while (zatwierdzonep1 == 1) //przejscie do opcji
 					{
 						system("cls");
-						if (pozycja == 0) //zloz zamowienie
-						{
-							cout << "Zloz zamowienie" << endl;
-							zatwierdzonep1 = 0;
-						}
 
-						if (pozycja == 1) //wyswietl zamowienia
+						if (pozycja == 0) //wyswietl zamowienia
 						{
 							ADAO.wysw_zamowienia();
 							zatwierdzonep1 = 0;
 						}
 
-						if (pozycja == 2)
+						if (pozycja == 1)
 						{
 							ADAO.zmien_status_zamowienia();
+							zatwierdzonep1 = 0;
+						}
+
+						if (pozycja == 2)
+						{
+							ADAO.anuluj_zamowienie();
+							zatwierdzonep1 = 0;
+						}
+
+						if (pozycja == 3)
+						{
+							ADAO.historia_zamowien();
 							zatwierdzonep1 = 0;
 						}
 					}
@@ -351,15 +358,15 @@ int MenuAdmin::menu(Osoba osoba)
 					while (zatwierdzonep3 == 1) //przejscie do opcji
 					{
 						system("cls");
-						if (pozycja == 0) //Ilosc zamowien
+						if (pozycja == 0) //Ilosc zakonczonych,realizowanych i zleconych
 						{
-							cout << "Ilosc zamowien" << endl;
+							ADAO.ilosc_zak_rel_zle();
 							zatwierdzonep3 = 0;
 						}
 
 						if (pozycja == 1) //Ilosc klientow
 						{
-							cout << "Ilosc klientow" << endl;
+							ADAO.ilosc_klientow();
 							zatwierdzonep3 = 0;
 						}
 					}

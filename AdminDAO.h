@@ -25,7 +25,6 @@ public:
 	void anuluj_zamowienie();
 	void zmien_status_zamowienia();
 	void historia_zamowien();
-	void ilosc_pac_lek();
-	void ilosc_wiz_nfz_pryw();
-	void ilosc_wyk_nwyk();
+	void ilosc_zak_rel_zle();
+	void ilosc_klientow();
 };
